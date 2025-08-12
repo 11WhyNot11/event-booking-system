@@ -1,4 +1,5 @@
 rootProject.name = 'event-booking-system'
 include 'discovery-server'
 include 'config-server'
+include 'api-gateway'
 

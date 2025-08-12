@@ -8,4 +8,5 @@ spring:
     config:
       server:
         git:
-          uri: file:///${user.dir}/../config-repo
+          uri: https://github.com/11WhyNot11/event-booking-config-repo.git
+      default-label: main

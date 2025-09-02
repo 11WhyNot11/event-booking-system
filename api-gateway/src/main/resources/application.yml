@@ -1,8 +1,36 @@
 spring:
   application:
     name: api-gateway
-  config:
-    import: optional:configserver:http://localhost:8888
+
   cloud:
-    config:
-      label: dev
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+
+      routes:
+        - id: event-service
+          uri: lb://event-service
+          predicates:
+            - Path=/api/events/**
+
+        - id: direct-8081
+          uri: http://localhost:8081
+          predicates:
+            - Path=/via8081/**
+          filters:
+            - StripPrefix=1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway,refresh,env
+  endpoint:
+    gateway:
+      enabled: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping: TRACE
+    org.springframework.cloud.gateway: TRACE

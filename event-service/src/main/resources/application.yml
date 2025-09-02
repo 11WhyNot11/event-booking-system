@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: event-service
+  config.import: optional:configserver:http://localhost:8888
+  cloud:
+    config:
+      label: dev
+  mvc:
+    log-resolved-exception: true
+
+server:
+  forward-headers-strategy: framework
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,loggers
+
+logging:
+  level:
+    com.arthur.event: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.jdbc: TRACE
+    org.springframework.web.servlet.handler: TRACE
+    org.springframework.web: DEBUG
+

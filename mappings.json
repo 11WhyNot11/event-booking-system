@@ -1,0 +1,1 @@
+{"type":"https://errors.event-booking/internal","title":"Internal server error","status":500,"detail":"Unexpected error","instance":"/actuator/mappings","correlationId":"a76f03d9-16a0-47a7-9217-6edd8287e202"}

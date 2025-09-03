@@ -10,18 +10,3 @@ spring:
 
 server:
   forward-headers-strategy: framework
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,loggers
-
-logging:
-  level:
-    com.arthur.event: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.jdbc: TRACE
-    org.springframework.web.servlet.handler: TRACE
-    org.springframework.web: DEBUG
-

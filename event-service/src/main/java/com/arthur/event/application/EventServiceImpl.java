@@ -2,6 +2,7 @@ package com.arthur.event.application;
 
 import com.arthur.event.api.dto.EventRequestDto;
 import com.arthur.event.api.dto.EventResponseDto;
+import com.arthur.event.application.validation.EventValidator;
 import com.arthur.event.domain.Event;
 import com.arthur.event.infrastructure.repository.EventRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,10 +19,13 @@ public class EventServiceImpl implements EventService {
 
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
+    private final EventValidator eventValidator;
 
     @Override
     @Transactional
     public EventResponseDto create(EventRequestDto dto) {
+        eventValidator.validateStartTimeIsLessThanEndTime(dto);
+
         Event entity = eventMapper.toEntity(dto);
         Event saved = eventRepository.save(entity);
         return eventMapper.toResponseDto(saved);
@@ -41,6 +45,8 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventResponseDto update(Long id, EventRequestDto dto) {
+        eventValidator.validateStartTimeIsLessThanEndTime(dto);
+
         Event event = getEventOrThrow(id);
         eventMapper.updateEntityFromDto(dto, event);
         return eventMapper.toResponseDto(event);

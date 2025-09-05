@@ -67,7 +67,7 @@ public class ProblemDetailAdvice {
     }
 
     @ExceptionHandler({
-            HttpMessageNotReadableException.class, // кривий JSON/формат
+            HttpMessageNotReadableException.class,
             Exception.class
     })
     public ProblemDetail handleInternal(Exception ex) {
@@ -91,5 +91,15 @@ public class ProblemDetailAdvice {
         pd.setDetail(ex.getMessage());
         pd.setInstance(URI.create(req.getRequestURI()));
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pd);
+    }
+
+    @ExceptionHandler({BusinessValidationException.class})
+    public ProblemDetail handleBusinessValidation(BusinessValidationException ex, HttpServletRequest req) {
+        var pd = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        pd.setType(TYPE_VALIDATION);
+        pd.setTitle("Validation error");
+        pd.setDetail(ex.getMessage());
+        pd.setInstance(URI.create(req.getRequestURI()));
+        return pd;
     }
 }

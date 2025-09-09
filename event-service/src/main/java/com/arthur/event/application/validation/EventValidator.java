@@ -8,8 +8,10 @@ import org.springframework.stereotype.Component;
 public class EventValidator {
 
     public void validateStartTimeIsLessThanEndTime(EventRequestDto dto) {
-        if(!dto.getStartTime().isBefore(dto.getEndTime())) {
-            throw new BusinessValidationException("invalid event time range");
+        if (dto.getStartTime() != null && dto.getEndTime() != null) {
+            if (!dto.getStartTime().isBefore(dto.getEndTime())) {
+                throw new BusinessValidationException("startTime must be before endTime");
+            }
         }
     }
 }

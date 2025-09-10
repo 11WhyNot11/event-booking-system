@@ -5,11 +5,18 @@ import com.arthur.event.api.dto.EventResponseDto;
 import com.arthur.event.application.validation.EventValidator;
 import com.arthur.event.domain.Event;
 import com.arthur.event.infrastructure.repository.EventRepository;
+import com.arthur.event.persistence.EventSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static org.springframework.data.jpa.domain.Specification.where;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -40,6 +47,25 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventResponseDto> getAllEvents() {
         return eventMapper.toResponseDtoList(eventRepository.findAll());
+    }
+
+    @Override
+    public Page<EventResponseDto> list(String q,
+                                       String location,
+                                       LocalDateTime dateFrom,
+                                       LocalDateTime dateTo,
+                                       Pageable pageable) {
+        int maxSize = 100;
+        Pageable safe = pageable.getPageSize() > maxSize ?
+                PageRequest.of(pageable.getPageNumber(), maxSize, pageable.getSort())
+                : pageable;
+
+        Specification<Event> spec = where(EventSpecifications.nameContains(q))
+                .and(EventSpecifications.locationEquals(location))
+                .and(EventSpecifications.startBetween(dateFrom, dateTo));
+
+        return eventRepository.findAll(spec, safe)
+                .map(eventMapper::toResponseDto);
     }
 
     @Override
